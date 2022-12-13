@@ -27,6 +27,27 @@ AlexSnake - simple snake game written in C with SDL
     }
 ```
 
+### if you don't want the grid to be displayed put #if 0 so it doesn't render.
+```c
+#if 1
+        static SDL_Rect debug_rect;
+        for (i_coords = 0; i_coords < FIELD_SIZE; i_coords++) {
+            for (j_coords = 0; j_coords < FIELD_SIZE; j_coords++) {
+                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
+                debug_rect.x = i_coords * BLOCK_SIZE;
+                debug_rect.y = j_coords * BLOCK_SIZE;
+                debug_rect.h = 100;
+                debug_rect.w = 1;
+                SDL_RenderFillRect(renderer, &debug_rect);
+
+                debug_rect.h = 1;
+                debug_rect.w = 100;
+                SDL_RenderFillRect(renderer, &debug_rect);
+            }
+        }
+#endif
+```
+
 ### and...
 ```c
         if (is_max_length == SDL_TRUE) {
