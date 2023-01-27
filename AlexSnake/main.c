@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#define BLOCK_SIZE 16
+#define BLOCK_SIZE 0x10
 #define FIELD_SIZE 0x20
 #define SNAKE_MAX_LENGTH FIELD_SIZE // 32
 #define STR_BUFF_SIZE 64
@@ -14,8 +14,8 @@
 #define GRID_ON
 
 static const int SCREEN_SIZE[] = { BLOCK_SIZE * FIELD_SIZE, BLOCK_SIZE * FIELD_SIZE };
-static enum MOVE_TO { TO_TOP = 1, TO_DOWN = 2, TO_LEFT = 3, TO_RIGHT = 4 };
-static enum GAME_STATUS { PLAYING = 1, WIN = 2, LOSE = 3 };
+static enum { TO_TOP = 1, TO_DOWN = 2, TO_LEFT = 3, TO_RIGHT = 4 } move_to = TO_RIGHT;
+static enum { PLAYING = 1, WIN = 2, LOSE = 3 }  game_status = PLAYING;
 
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
@@ -26,8 +26,8 @@ static SDL_Color text_color = {0xFF, 0xFF, 0xFF, 0x00};
 static SDL_Surface* text_surf = NULL;
 static SDL_Texture* text_texture = NULL;
 
-int init_resources();
-void destroy_resources();
+int init_resources(void);
+void destroy_resources(void);
 
 
 int main(int argc, char* argv[]) {
@@ -35,26 +35,29 @@ int main(int argc, char* argv[]) {
     SDL_bool quit = SDL_TRUE;
     SDL_bool is_max_length = SDL_FALSE;
     SDL_Rect rect_block = { .h = BLOCK_SIZE, .w = BLOCK_SIZE };
-    SDL_Rect TextPos;
+    SDL_Rect text_pos;
 
-    enum MOVE_TO move_to = TO_RIGHT;
-    enum GAME_STATUS game_status = PLAYING;
     int i_coords, j_coords;
-    int game_speed_ms = 35;
     int body_snake_length = 4;
     int rewrite_snake_coords = 1;
+    Uint32 game_speed = 20;
     int err_code;
+
+    Uint32 timer_start, timer_end, timer_one_tick = 0, fps = 0;
+    Uint32 game_speed_timer = SDL_GetTicks();
+
+    const Uint32 delay_time = 1000 / 60;
 
     SDL_Point eat_spawn_coords;
     SDL_Point snake_body[SNAKE_MAX_LENGTH];
-    int map_structure[FIELD_SIZE][FIELD_SIZE];
+    int map_structure[FIELD_SIZE][FIELD_SIZE] = {{0}, {0}};
     char str_buffer[STR_BUFF_SIZE];
 
     SDL_zeroa(snake_body);
-    SDL_zeroa(map_structure);
+    // SDL_zeroa(map_structure);
 
 #ifdef GRID_ON
-    SDL_Rect debug_rect;
+    SDL_Rect grid_rect;
 #endif // GRID_ON
 
     err_code = init_resources();
@@ -70,8 +73,10 @@ int main(int argc, char* argv[]) {
     eat_spawn_coords.x = rand() % 0x20;
     eat_spawn_coords.y = rand() % 0x20;
 
+    timer_start = SDL_GetTicks();
+
     while (quit) {
-        while (SDL_PollEvent(&event_game) != NULL) {
+        while (SDL_PollEvent(&event_game)) {
             if (event_game.type == SDL_QUIT) {
                 quit = SDL_FALSE;
             }
@@ -98,9 +103,10 @@ int main(int argc, char* argv[]) {
 
         }
 
-        if (game_status == PLAYING) {
+        if (game_status == PLAYING && SDL_GetTicks() - game_speed_timer > game_speed) {
+            game_speed_timer = SDL_GetTicks();
 
-            switch (move_to) {
+        	switch (move_to) {
             case TO_TOP:
                 snake_body[0].y--;
                 break;
@@ -141,9 +147,9 @@ int main(int argc, char* argv[]) {
                     text_surf = TTF_RenderText_Solid(font, "You lose!", text_color);
                     text_texture = SDL_CreateTextureFromSurface(renderer, text_surf);
 
-                    SDL_QueryTexture(text_texture, NULL, NULL, &TextPos.w, &TextPos.h);
-                    TextPos.x = SCREEN_SIZE[0] / 2 - TextPos.w / 2;
-                    TextPos.y = SCREEN_SIZE[1] / 2 - TextPos.h / 2;
+                    SDL_QueryTexture(text_texture, NULL, NULL, &text_pos.w, &text_pos.h);
+                    text_pos.x = SCREEN_SIZE[0] / 2 - text_pos.w / 2;
+                    text_pos.y = SCREEN_SIZE[1] / 2 - text_pos.h / 2;
 
                     SDL_SetWindowTitle(window, "AlexSnake - You lose!");
                 }
@@ -157,10 +163,11 @@ int main(int argc, char* argv[]) {
                 eat_spawn_coords.y = rand() % 0x20;
                 body_snake_length++;
 
-                sprintf_s(str_buffer, STR_BUFF_SIZE, "AlexSnake %d/%d", body_snake_length, SNAKE_MAX_LENGTH);
+                sprintf_s(str_buffer, STR_BUFF_SIZE, "AlexSnake %d/%d & FPS = %d", body_snake_length, SNAKE_MAX_LENGTH, fps);
+
                 SDL_SetWindowTitle(window, str_buffer);
 
-                if (body_snake_length % 5 == 0) game_speed_ms -= 4;
+                if (body_snake_length % 5 == 0) game_speed -= 2;
             }
 
             // WIN
@@ -170,9 +177,9 @@ int main(int argc, char* argv[]) {
                 text_surf = TTF_RenderText_Solid(font, "You win!", text_color);
                 text_texture = SDL_CreateTextureFromSurface(renderer, text_surf);
 
-                SDL_QueryTexture(text_texture, NULL, NULL, &TextPos.w, &TextPos.h);
-                TextPos.x = SCREEN_SIZE[0] / 2 - TextPos.w / 2;
-                TextPos.y = SCREEN_SIZE[1] / 2 - TextPos.h / 2;
+                SDL_QueryTexture(text_texture, NULL, NULL, &text_pos.w, &text_pos.h);
+                text_pos.x = SCREEN_SIZE[0] / 2 - text_pos.w / 2;
+                text_pos.y = SCREEN_SIZE[1] / 2 - text_pos.h / 2;
 
                 SDL_SetWindowTitle(window, "AlexSnake - You win!");
             }
@@ -224,15 +231,15 @@ int main(int argc, char* argv[]) {
 
 #ifdef GRID_ON
                     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
-                    debug_rect.x = i_coords * BLOCK_SIZE;
-                    debug_rect.y = j_coords * BLOCK_SIZE;
-                    debug_rect.h = 100;
-                    debug_rect.w = 1;
-                    SDL_RenderFillRect(renderer, &debug_rect);
+                    grid_rect.x = i_coords * BLOCK_SIZE;
+                    grid_rect.y = j_coords * BLOCK_SIZE;
+                    grid_rect.h = 100;
+                    grid_rect.w = 1;
+                    SDL_RenderFillRect(renderer, &grid_rect);
 
-                    debug_rect.h = 1;
-                    debug_rect.w = 100;
-                    SDL_RenderFillRect(renderer, &debug_rect);
+                    grid_rect.h = 1;
+                    grid_rect.w = 100;
+                    SDL_RenderFillRect(renderer, &grid_rect);
 #endif
                 }
             }
@@ -244,24 +251,40 @@ int main(int argc, char* argv[]) {
             SDL_RenderClear(renderer);
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0x00);
 
-            SDL_RenderCopy(renderer, text_texture, NULL, &TextPos);
+            SDL_RenderCopy(renderer, text_texture, NULL, &text_pos);
         }
         else if (game_status == LOSE) {
             SDL_RenderClear(renderer);
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0x00);
 
-            SDL_RenderCopy(renderer, text_texture, NULL, &TextPos);
+            SDL_RenderCopy(renderer, text_texture, NULL, &text_pos);
         }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(game_speed_ms);
+
+        timer_end = SDL_GetTicks();
+        if (timer_end - timer_start > 1000) {
+
+            timer_one_tick = (timer_end - timer_start) / 1000;
+            timer_start = SDL_GetTicks();
+
+            sprintf_s(str_buffer, STR_BUFF_SIZE, "AlexSnake %d/%d & FPS = %d", body_snake_length, SNAKE_MAX_LENGTH, fps);
+            SDL_SetWindowTitle(window, str_buffer);
+
+            fps = 0;
+        }
+        else fps++;
+
+        if (timer_one_tick < delay_time) {
+            SDL_Delay(delay_time - timer_one_tick);
+        }
     }
 
     destroy_resources();
     return 0;
 }
 
-int init_resources() {
+int init_resources(void) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Error", SDL_GetError(), NULL);
         return 1;
@@ -295,13 +318,13 @@ int init_resources() {
     return 0;
 }
 
-void destroy_resources() {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
+void destroy_resources(void) {
+    if (window != NULL) SDL_DestroyWindow(window);
+    if (renderer!= NULL) SDL_DestroyRenderer(renderer);
 
-    SDL_FreeSurface(text_surf);
-    SDL_DestroyTexture(text_texture);
-    TTF_CloseFont(font);
+    if (text_surf!= NULL) SDL_FreeSurface(text_surf);
+    if (text_texture != NULL) SDL_DestroyTexture(text_texture);
+    if (font!= NULL) TTF_CloseFont(font);
 
     TTF_Quit();
     SDL_Quit();

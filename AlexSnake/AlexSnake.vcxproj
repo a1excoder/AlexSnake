@@ -104,13 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Alex\Desktop\AlexSnake\SDL2_ttf-2.20.1\include;C:\Users\Alex\Desktop\AlexSnake\SDL2-2.26.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Alex\Documents\projects\AlexSnake\SDL2_ttf-2.20.1\include;C:\Users\Alex\Documents\projects\AlexSnake\SDL2-2.26.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Alex\Desktop\AlexSnake\SDL2_ttf-2.20.1\lib\x64;C:\Users\Alex\Desktop\AlexSnake\SDL2-2.26.1\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Alex\Documents\projects\AlexSnake\SDL2_ttf-2.20.1\lib\x64;C:\Users\Alex\Documents\projects\AlexSnake\SDL2-2.26.1\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Alex\Desktop\AlexSnake\SDL2_ttf-2.20.1\include;C:\Users\Alex\Desktop\AlexSnake\SDL2-2.26.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Alex\Documents\projects\AlexSnake\SDL2_ttf-2.20.1\include;C:\Users\Alex\Documents\projects\AlexSnake\SDL2-2.26.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -131,7 +131,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Alex\Desktop\AlexSnake\SDL2_ttf-2.20.1\lib\x64;C:\Users\Alex\Desktop\AlexSnake\SDL2-2.26.1\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Alex\Documents\projects\AlexSnake\SDL2_ttf-2.20.1\lib\x64;C:\Users\Alex\Documents\projects\AlexSnake\SDL2-2.26.1\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

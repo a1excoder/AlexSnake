@@ -1,11 +1,8 @@
 ﻿  main.c
-C:\Users\Alex\Desktop\AlexSnake\AlexSnake\main.c(17,75): warning C4091: static : пропускается слева от "MOVE_TO", когда ни одна переменная не объявлена
-C:\Users\Alex\Desktop\AlexSnake\AlexSnake\main.c(18,59): warning C4091: static : пропускается слева от "GAME_STATUS", когда ни одна переменная не объявлена
-C:\Users\Alex\Desktop\AlexSnake\AlexSnake\main.c(63,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\Alex\Desktop\AlexSnake\AlexSnake\main.c(74,50): warning C4047: !=: "int" отличается по уровням косвенного обращения от "void *"
+C:\Users\Alex\Documents\projects\AlexSnake\AlexSnake\main.c(66,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
   Создание кода
   1 of 7 functions (14.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
-  AlexSnake.vcxproj -> C:\Users\Alex\Desktop\AlexSnake\x64\Release\AlexSnake.exe
+  AlexSnake.vcxproj -> C:\Users\Alex\Documents\projects\AlexSnake\x64\Release\AlexSnake.exe
